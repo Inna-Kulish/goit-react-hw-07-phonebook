@@ -5,12 +5,12 @@ import { persistStore, FLUSH,
   PERSIST,
   PURGE,
   REGISTER, } from 'redux-persist'
-import { persistedContactReducer } from './contactsSlice';
+import { contactsReducer } from './contactsSlice';
 import { filterReducer } from './filterSlice';
 
 export const store = configureStore({
   reducer: {
-    contacts: persistedContactReducer,
+    contacts: contactsReducer,
     filter: filterReducer,
   },
   middleware: (getDefaultMiddleware) =>

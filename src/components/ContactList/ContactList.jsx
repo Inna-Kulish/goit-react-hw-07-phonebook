@@ -1,26 +1,28 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteContact } from 'redux/contactsSlice';
-import { getContacts } from 'redux/selectors';
-import { getFilter } from 'redux/selectors';
+import { deleteContact } from 'redux/operations';
+import {
+  getContacts,
+  getError,
+  getIsLoading,
+  getVisibleContacts,
+} from 'redux/selectors';
 import { List, Item, ContactItem, DeleteBtn } from './ContactList.styled';
 
 const ContactList = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(getContacts);
-  const filterName = useSelector(getFilter);
-
-  const getVisibleContacts = () => {
-    const normalizedFilter = filterName.toLowerCase();
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(normalizedFilter)
-    );
-  };
-
-  const visibleContacts = getVisibleContacts();
+  const isLoading = useSelector(getIsLoading);
+  const error = useSelector(getError);
+  const visibleContacts = useSelector(getVisibleContacts);
 
   return (
     <List>
-      {visibleContacts.map(({ id, name, number }) => (
+      {isLoading && !error ? (
+        <b>Request in progress...</b>
+      ) : contacts.length === 0 && !error ? (
+        <p>Add your first contact.</p>
+      ) : (
+        visibleContacts.map(({ id, name, number }) => (
           <Item key={id}>
             <ContactItem>
               {name}: {number}
@@ -32,7 +34,8 @@ const ContactList = () => {
               Delete
             </DeleteBtn>
           </Item>
-        ))}
+        ))
+      )}
     </List>
   );
 };
